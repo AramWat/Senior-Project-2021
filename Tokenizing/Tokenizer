@@ -1,0 +1,134 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+
+namespace Parser { 
+    public class SimpleRegexTokenizer : ITokenizer
+    {
+        private List<TokenDefinition> _tokenDefinitions;
+
+        public SimpleRegexTokenizer()
+        {
+            _tokenDefinitions = new List<TokenDefinition>
+            {
+                // Strings:
+
+         //   new TokenDefinition(TokenType.strings, "^\"[^\"\r]*\""),
+            //  _tokenDefinitions.Add(new TokenDefinition(TokenType.identifier, " "));
+            /*  new TokenDefinition(TokenType.assignment, "^="),
+              new TokenDefinition(TokenType.@int, "^int"),
+              new TokenDefinition(TokenType.@for, "^for"),
+              new TokenDefinition(TokenType.@while, "^while"),
+              new TokenDefinition(TokenType.@bool, "^bool"),
+              new TokenDefinition(TokenType.@break, "^break"),
+              new TokenDefinition(TokenType.@byte, "^byte"),
+              new TokenDefinition(TokenType.@float, "^float"),
+              new TokenDefinition(TokenType.@double, "^double"),
+              new TokenDefinition(TokenType.@char, "^class"),
+              new TokenDefinition(TokenType.@if, "^if"),
+              new TokenDefinition(TokenType.@in, "^in"),
+              new TokenDefinition(TokenType.@invalid, "^invalid"),
+              new TokenDefinition(TokenType.@class, "^class"),
+              new TokenDefinition(TokenType.@console, "^System"),
+              new TokenDefinition(TokenType.@continue, "^continue"),
+              new TokenDefinition(TokenType.@return, "^return"),
+              new TokenDefinition(TokenType.@do, "^do"),
+              new TokenDefinition(TokenType.@long, "^long"),
+              new TokenDefinition(TokenType.@double, "^double"),
+              //new TokenDefinition(TokenType.@else, "^else"),
+              new TokenDefinition(TokenType.@enum, "^enum"),
+              new TokenDefinition(TokenType.@public, "^public"),
+              new TokenDefinition(TokenType.@private, "^private"),
+              new TokenDefinition(TokenType.@false, "^false"),
+              new TokenDefinition(TokenType.@finally, "^finally"),
+              new TokenDefinition(TokenType.@fixed, "^fixed"),
+              new TokenDefinition(TokenType.@float, "^float"),
+              new TokenDefinition(TokenType.@out, "^out"),
+              new TokenDefinition(TokenType.@out, "^out"),
+              new TokenDefinition(TokenType.@SequenceTerminator, "^;"),
+              new TokenDefinition(TokenType.@true, "^true"),
+              new TokenDefinition(TokenType.@namespace, "^namespace"),
+              new TokenDefinition(TokenType.@new, "^NULL"),*/
+              new TokenDefinition(TokenType.@digit, @"(\d*\.?\d+)"),
+            //  new TokenDefinition(TokenType.@ident, @"[A-Za-z]+"),
+            };
+        }
+
+        public IEnumerable<DslToken> Tokenize(string lqlText)
+        {
+            var tokens = new List<DslToken>();
+
+            string remainingText = lqlText;
+
+            while (!string.IsNullOrWhiteSpace(remainingText))
+            {
+                var match = FindMatch(remainingText);
+                if (match.IsMatch)
+                {
+                    tokens.Add(new DslToken(match.TokenType, match.Value));
+                    Console.WriteLine("Tokentype: " + match.TokenType + " Value: " + match.Value);
+                    remainingText = match.RemainingText;
+                }
+                else
+                {
+                    if (IsWhitespace(remainingText))
+                    {
+                        remainingText = remainingText.Substring(1);
+                    }
+                    else
+                    {
+                        var invalidTokenMatch = CreateInvalidTokenMatch(remainingText);
+                        tokens.Add(new DslToken(invalidTokenMatch.TokenType, invalidTokenMatch.Value));
+                        remainingText = invalidTokenMatch.RemainingText;
+                    }
+                }
+            }
+
+            tokens.Add(new DslToken(TokenType.SequenceTerminator, string.Empty));
+            /*   foreach (var token in tokens)
+               {
+                   Console.WriteLine("Tokentype: " + token.TokenType + " Value: " + token.Value);
+               }
+               return tokens;*/
+            return tokens;
+        }
+        
+        private TokenMatch FindMatch(string lqlText)
+        {
+            foreach (var tokenDefinition in _tokenDefinitions)
+            {
+                var match = tokenDefinition.Match(lqlText);
+                if (match.IsMatch)
+                    return match;
+            }
+
+            return new TokenMatch() { IsMatch = false };
+        }
+
+        private bool IsWhitespace(string lqlText)
+        {
+            return Regex.IsMatch(lqlText, "^\\s+");
+        }
+
+        private TokenMatch CreateInvalidTokenMatch(string lqlText)
+        {
+            var match = Regex.Match(lqlText, "(^\\S+\\s)|^\\S+");
+            if (match.Success)
+            {
+                return new TokenMatch()
+                {
+                    IsMatch = true,
+                    RemainingText = lqlText.Substring(match.Length),
+                    TokenType = TokenType.Invalid,
+                    Value = match.Value.Trim()
+                };
+            }
+
+            throw new DslParserException("Failed to generate invalid token");
+        }
+    }
+}
