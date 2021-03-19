@@ -1,0 +1,71 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Parser
+{
+    public enum TokenType
+    {
+        @assignment,
+        @bool,
+        @break,
+        @byte,
+        @char,
+        @class,
+        @console,
+        @continue,
+        @digit,
+        @do,
+        @double,
+        @else,
+        @enum,
+        @false,
+        @finally,
+        @fixed,
+        @float,
+        @for,
+        @if,
+        @in,
+        @ident,
+        @int,
+        @Invalid,
+        @is,
+        @long,
+        @namespace,
+        @new,
+        @null,
+        @operators,
+        @out,
+        @while,
+        @private,
+        @public,
+        @return,
+        @SequenceTerminator,
+        @strings,
+        @true
+        //@params,
+        //@override,
+        //@object,
+        // @lock,
+        //@interface,
+        // @internal,
+        //@implicit,
+        //@foreach,
+        //@goto,
+        //@event,
+        //@explicit,
+        //@extern,
+        //@decimal,
+        // @default,
+        //@Const,
+        //@checked,
+        //@case,
+        //@catch,
+        //identifier,
+        // @abstract,
+        //@as,
+        //@base,
+    }
+}
