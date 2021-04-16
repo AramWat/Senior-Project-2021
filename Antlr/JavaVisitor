@@ -1,0 +1,76 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using Antlr4.Runtime.Misc;
+
+namespace JavaCSharp
+{
+
+    public class JavaVisitor : JavaParserBaseVisitor<object>
+    {
+        //For Storing C Code
+        public static List<String> C = new List<string>();
+
+        //For Indents
+        public int[] indentCount = new int[0];
+
+        public void indents()
+        {
+            for (int i = 0; i < indentCount[0]; i++)
+            {
+                C.Add("\t");
+            }
+        }
+      
+        public override object VisitCompilationUnit([NotNull] JavaParser.CompilationUnitContext context)
+        {
+            return VisitChildren(context);
+        }
+        public override object VisitClassDeclaration([NotNull] JavaParser.ClassDeclarationContext context)
+        {
+            int x = context.ChildCount;
+            for (int i = 0; i <= x; i++)
+            {
+                if(context.GetChild(i).GetText ==  
+            }
+               
+            //Console.Write(context.GetText() + " ");
+            //Console.Write(context.GetChild(0).GetText() + " ");
+            //Console.WriteLine(context.GetChild(1).GetText());
+            return VisitChildren(context);
+        }
+        public override object VisitTypeDeclaration([NotNull] JavaParser.TypeDeclarationContext context)
+        {
+            return VisitChildren(context);
+        }
+        public override object VisitClassOrInterfaceModifier([NotNull] JavaParser.ClassOrInterfaceModifierContext context)
+        {
+            //C.Add(context.GetText());
+            //Console.WriteLine(C);
+            Console.Write(context.GetChild(0).GetText()+ " ");
+            return VisitChildren(context);
+        }
+        public override object VisitClassBody([NotNull] JavaParser.ClassBodyContext context)
+        {
+            Console.Write(context.GetChild(0).GetText() + "\n");
+            return VisitChildren(context);
+        }
+        public override object VisitClassBodyDeclaration([NotNull] JavaParser.ClassBodyDeclarationContext context)
+        {
+            return VisitChildren(context);
+        }
+        public override object VisitModifier([NotNull] JavaParser.ModifierContext context)
+        {
+            
+            return VisitChildren(context);
+        }
+        public override object VisitMemberDeclaration([NotNull] JavaParser.MemberDeclarationContext context)
+        {
+            return VisitChildren(context);
+        }
