@@ -37,10 +37,19 @@ namespace JavaCSharp
             int x = context.ChildCount;
             for (int i = 0; i <= x; i++)
             {
-                if(context.GetChild(i).GetText ==  
+                string token = context.GetChild(i).GetText();
+                switch (token)
+                {
+                    case "class":
+                        Console.Write(context.GetChild(i).GetText() + " ");
+                        i++;
+                        Console.ReadLine();
+                        break;
+                        
+                }   
             }
                
-            //Console.Write(context.GetText() + " ");
+            Console.Write(context.GetText() + " ");
             //Console.Write(context.GetChild(0).GetText() + " ");
             //Console.WriteLine(context.GetChild(1).GetText());
             return VisitChildren(context);
@@ -58,7 +67,7 @@ namespace JavaCSharp
         }
         public override object VisitClassBody([NotNull] JavaParser.ClassBodyContext context)
         {
-            Console.Write(context.GetChild(0).GetText() + "\n");
+            //Console.Write(context.GetChild(0).GetText() + "\n");
             return VisitChildren(context);
         }
         public override object VisitClassBodyDeclaration([NotNull] JavaParser.ClassBodyDeclarationContext context)
@@ -74,3 +83,10 @@ namespace JavaCSharp
         {
             return VisitChildren(context);
         }
+
+
+
+
+
+    }
+}
