@@ -92,12 +92,20 @@ namespace JavaCSharp
             int x = 0;
             char[] delimeters = { ' ', '.', '(', ')', };
             string statement = context.GetChild(0).GetText();
-            string lookahead;
+          
             string[] tok = statement.Split(delimeters, StringSplitOptions.None);
-            foreach (string token in tok)
+            int last = tok.Length;
+            List<string> tokens = new List<string>(tok);
+            tokens.Add("");
+
+            foreach (string token in tokens)
             {
                 string rules = token;
-                lookahead = tok[x + 1];
+                string lookahead = "";
+                if (x + 1 < tokens.Count)
+                    lookahead = tokens[x + 1];
+                else
+                    lookahead = "";               
                 switch (rules)
                 {
                     case "System":
