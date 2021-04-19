@@ -9,7 +9,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Antlr4.Runtime.Misc;
 
-namespace ConsoleApp3
+namespace JavaCSharp
 {
 
     public class JavaVisitor : JavaParserBaseVisitor<object>
@@ -88,14 +88,86 @@ namespace ConsoleApp3
         }
         public override object VisitMethodBody([NotNull] JavaParser.MethodBodyContext context)
         {
+            //Console.Write(context.GetChild(0).GetText() + "\n");
+            int x = 0;
+            char[] delimeters = { ' ', '.', '(', ')', };
+            string statement = context.GetChild(0).GetText();
+            string lookahead;
+            string[] tok = statement.Split(delimeters, StringSplitOptions.None);
+            foreach (string token in tok)
+            {
+                string rules = token;
+                lookahead = tok[x + 1];
+                switch (rules)
+                {
+                    case "System":
+                        Console.Write("Console.");
+                        x++;
+                        break;
+                    case "{System":
+                        Console.Write("{\nConsole.");
+                        x++;
+                        break;
+                    case "out":
+                        x++;
+                        break;
+                    case "println":
+                        Console.Write("WriteLine(");
+                        x++;
+                        break;
+                    case ";":
+                        Console.Write(rules + "\n");
+                        x++;
+                        break;
+
+                    default:
+                        if (rules.StartsWith("\""))
+                        {
+                            Console.Write(rules + " ");
+                            x++;
+                            break;
+                        }
+                        else if (rules.EndsWith("\""))
+                        {
+                            Console.Write(rules + ")");
+                            x++;
+                            break;
+                        }
+                        else if (lookahead == "length")
+                        {
+                            Console.Write(rules + ".");
+                            x++;
+                            break;
+                        }
+                        else if (rules.StartsWith("{"))
+                        {
+                            Console.Write("{\n" + rules.Substring(1, rules.Length - 1) + " ");
+                            x++;
+                            break;
+                        }
+                        else if (rules.EndsWith("}"))
+                        {
+                            Console.Write(rules.Substring(0, rules.Length - 1) + "\n}");
+                            x++;
+                            break;
+                        }
+
+                        break;
+                }
+                //Console.Write(token + " ");
+            }
+
+            //Console.Write(statement);
+            //Console.Write(context.GetChild(2).GetText() + "\n");
             return VisitChildren(context);
         }
         public override object VisitBlock([NotNull] JavaParser.BlockContext context)
         {
-            Console.Write(context.GetChild(0).GetText() + "\n");
-            char[] delimeters = { ' ', '.', '(', ')' };
+            /*Console.Write(context.GetChild(0).GetText() + "\n");
+            char[] delimeters = { ' ' , '.' , '(' , ')' };
             string statement = context.GetChild(1).GetText();
-            string[] tok = statement.Split(delimeters, StringSplitOptions.None);
+            
+            string[] tok = statement.Split(delimeters, StringSplitOptions.None );
             foreach (string token in tok)
             {
                 string rules = token;
@@ -119,25 +191,30 @@ namespace ConsoleApp3
                             break;
                         }
                         else if (rules.EndsWith("\""))
-                        {
+                        { 
                             Console.Write(rules + ")");
                             break;
                         }
+
                         break;
+
+                  
                 }
                 //Console.Write(token + " ");
             }
-            Console.Write(context.GetChild(2).GetText() + "\n");
+            //Console.Write(statement);
+            //Console.Write(statement);
+            //Console.Write(context.GetChild(2).GetText() + "\n");*/
             return VisitChildren(context);
         }
         public override object VisitBlockStatement([NotNull] JavaParser.BlockStatementContext context)
         {
-
+            // Console.Write(context.GetChild(0).GetText());
             return VisitChildren(context);
         }
         public override object VisitStatement([NotNull] JavaParser.StatementContext context)
         {
-            Console.Write(context.GetText());
+            //Console.Write(context.GetChild(0).GetText());
             return VisitChildren(context);
         }
         public override object VisitExpression([NotNull] JavaParser.ExpressionContext context)
@@ -159,50 +236,6 @@ namespace ConsoleApp3
         {
             //Console.Write(context.GetChild(3).GetText());
             return VisitChildren(context);
-        }
-        public override object VisitVariableInitializer([NotNull] JavaParser.VariableInitializerContext context)
-        {
-            //Console.GetText();
-            //string rules = token;
-            //switch (rules)
-            //{
-            //    case "int":
-            //        Console.Write("int");
-            //        break;
-            //    case "long":
-            //        Console.Write("long");
-            //        break;
-            //    case "float":
-            //        Console.Write("float");
-            //        break;
-            //    case "boolean":
-            //        Console.Write("bool");
-            //        break;
-            //    case "double":
-            //        Console.Write("double");
-            //        break;
-            //    case "String":
-            //        Console.Write("string");
-            //        break;
-            //    case "char":
-            //        Console.Write("char");
-            //        break;
-            //}
-                
-
-            return base.VisitVariableInitializer(context);
-        }
-        public override object VisitVariableDeclaratorId([NotNull] JavaParser.VariableDeclaratorIdContext context)
-        {
-            return base.VisitVariableDeclaratorId(context);
-        }
-        public override object VisitVariableDeclarator([NotNull] JavaParser.VariableDeclaratorContext context)
-        {
-            return base.VisitVariableDeclarator(context);
-        }
-        public override object VisitVariableDeclarators([NotNull] JavaParser.VariableDeclaratorsContext context)
-        {
-            return base.VisitVariableDeclarators(context);
         }
     }
 }
