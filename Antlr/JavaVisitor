@@ -90,14 +90,14 @@ namespace JavaCSharp
         {
             //Console.Write(context.GetChild(0).GetText() + "\n");
             int x = 0;
-            char[] delimeters = { ' ', '.', '(', ')', };
+            char[] delimeters = { ' ', '.', '(', ')', '\n',};
             string statement = context.GetChild(0).GetText();
           
             string[] tok = statement.Split(delimeters, StringSplitOptions.None);
             int last = tok.Length;
             List<string> tokens = new List<string>(tok);
             tokens.Add("");
-
+           // Console.Write(context.GetText());
             foreach (string token in tokens)
             {
                 string rules = token;
@@ -126,6 +126,30 @@ namespace JavaCSharp
                     case ";":
                         Console.Write(rules + "\n");
                         x++;
+                        break;
+                    case "int":
+                        Console.Write(rules+ " ");
+                        break;
+                    case "=":
+                        Console.Write(rules + " ");
+                        break;
+                    case "*=":
+                        Console.Write(rules + " ");
+                        break;
+                    case "+=":
+                        Console.Write(rules + " ");
+                        break;
+                    case "/=":
+                        Console.Write(rules + " ");
+                        break;
+                    case "-=":
+                        Console.Write(rules + " ");
+                        break;
+                    case "if":
+                        Console.Write(rules + "(");
+                        break;
+                    case "!=":
+                        Console.Write(rules + " ");
                         break;
 
                     default:
@@ -159,7 +183,15 @@ namespace JavaCSharp
                             x++;
                             break;
                         }
-
+                        else if(lookahead == ";")
+                        {
+                            Console.Write(rules + "\n");
+                        }
+                     
+                        else
+                        {
+                            Console.Write(rules + " ");
+                        }
                         break;
                 }
                 //Console.Write(token + " ");
@@ -167,6 +199,8 @@ namespace JavaCSharp
 
             //Console.Write(statement);
             //Console.Write(context.GetChild(2).GetText() + "\n");
+            Console.Write("\n}");
+            Console.ReadLine();
             return VisitChildren(context);
         }
         public override object VisitBlock([NotNull] JavaParser.BlockContext context)
@@ -210,14 +244,14 @@ namespace JavaCSharp
                 }
                 //Console.Write(token + " ");
             }
-            //Console.Write(statement);
-            //Console.Write(statement);
-            //Console.Write(context.GetChild(2).GetText() + "\n");*/
+            Console.Write(statement);
+            Console.Write(statement);
+            Console.Write(context.GetChild(2).GetText() + "\n");*/
             return VisitChildren(context);
         }
         public override object VisitBlockStatement([NotNull] JavaParser.BlockStatementContext context)
         {
-            // Console.Write(context.GetChild(0).GetText());
+            //Console.Write(context.GetChild(2).GetText());
             return VisitChildren(context);
         }
         public override object VisitStatement([NotNull] JavaParser.StatementContext context)
@@ -227,22 +261,27 @@ namespace JavaCSharp
         }
         public override object VisitExpression([NotNull] JavaParser.ExpressionContext context)
         {
-            //Console.Write(context.GetChild(1).GetText());
+            //Console.Write(context.GetText());
             return VisitChildren(context);
         }
         public override object VisitExpressionList([NotNull] JavaParser.ExpressionListContext context)
         {
-            //  Console.Write(context.GetText());
+           // Console.Write(context.GetText());
             return VisitChildren(context);
         }
         public override object VisitPrimary([NotNull] JavaParser.PrimaryContext context)
         {
-            //  Console.Write(context.GetText());
+        
             return VisitChildren(context);
         }
         public override object VisitMethodCall([NotNull] JavaParser.MethodCallContext context)
         {
             //Console.Write(context.GetChild(3).GetText());
+            return VisitChildren(context);
+        }
+        public override object VisitPrimitiveType([NotNull] JavaParser.PrimitiveTypeContext context)
+        {
+
             return VisitChildren(context);
         }
     }
