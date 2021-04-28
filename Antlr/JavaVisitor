@@ -15,8 +15,14 @@ namespace JavaCSharp
     public class JavaVisitor : JavaParserBaseVisitor<object>
     {
         //For Storing C Code
-        public static List<String> C = new List<string>();
+      
+        private List<String> C = new List<string>();
 
+       /* public List<String> C
+        {
+            get { return C; }
+        }*/
+       
         //For Indents
         public int[] indentCount = new int[0];
 
@@ -72,7 +78,7 @@ namespace JavaCSharp
         public override object VisitMethodDeclaration([NotNull] JavaParser.MethodDeclarationContext context)
         {
             Console.Write(context.GetChild(0).GetText() + " ");
-            Console.Write(context.GetChild(1).GetText() + " ");
+            Console.Write(context.GetChild(1).GetText() + " "); 
             Console.Write(context.GetChild(2).GetText() + "\n");
             return VisitChildren(context);
         }
@@ -88,8 +94,9 @@ namespace JavaCSharp
         }
         public override object VisitMethodBody([NotNull] JavaParser.MethodBodyContext context)
         {
+           
             //Console.Write(context.GetChild(0).GetText() + "\n");
-            int x = 0;
+            /*int x = 0;
             char[] delimeters = { ' ', '.', '(', ')', '\n',};
             string statement = context.GetChild(0).GetText();
           
@@ -109,47 +116,47 @@ namespace JavaCSharp
                 switch (rules)
                 {
                     case "System":
-                        Console.Write("Console.");
+                        C.Add("Console.");
                         x++;
                         break;
                     case "{System":
-                        Console.Write("{\nConsole.");
+                        C.Add("{\nConsole.");
                         x++;
                         break;
                     case "out":
                         x++;
                         break;
                     case "println":
-                        Console.Write("WriteLine(");
+                        C.Add("WriteLine(");
                         x++;
                         break;
                     case ";":
-                        Console.Write(rules + "\n");
+                        C.Add(rules + "\n");
                         x++;
                         break;
                     case "int":
-                        Console.Write(rules+ " ");
+                        C.Add(rules+ " ");
                         break;
                     case "=":
-                        Console.Write(rules + " ");
+                        C.Add(rules + " ");
                         break;
                     case "*=":
-                        Console.Write(rules + " ");
+                        C.Add(rules + " ");
                         break;
                     case "+=":
-                        Console.Write(rules + " ");
+                        C.Add(rules + " ");
                         break;
                     case "/=":
-                        Console.Write(rules + " ");
+                        C.Add(rules + " ");
                         break;
                     case "-=":
-                        Console.Write(rules + " ");
+                        C.Add(rules + " ");
                         break;
                     case "if":
-                        Console.Write(rules + "(");
+                        C.Add(rules + "(");
                         break;
                     case "!=":
-                        Console.Write(rules + " ");
+                        C.Add(rules + " ");
                         break;
 
                     default:
@@ -199,55 +206,13 @@ namespace JavaCSharp
 
             //Console.Write(statement);
             //Console.Write(context.GetChild(2).GetText() + "\n");
-            Console.Write("\n}");
-            Console.ReadLine();
+            C.Add("\n}");?*/
             return VisitChildren(context);
         }
         public override object VisitBlock([NotNull] JavaParser.BlockContext context)
         {
-            /*Console.Write(context.GetChild(0).GetText() + "\n");
-            char[] delimeters = { ' ' , '.' , '(' , ')' };
-            string statement = context.GetChild(1).GetText();
             
-            string[] tok = statement.Split(delimeters, StringSplitOptions.None );
-            foreach (string token in tok)
-            {
-                string rules = token;
-                switch (rules)
-                {
-                    case "System":
-                        Console.Write("Console.");
-                        break;
-                    case "out":
-                        break;
-                    case "println":
-                        Console.Write("WriteLine(");
-                        break;
-                    case ";":
-                        Console.Write(rules + "\n");
-                        break;
-                    default:
-                        if (rules.StartsWith("\""))
-                        {
-                            Console.Write(rules + " ");
-                            break;
-                        }
-                        else if (rules.EndsWith("\""))
-                        { 
-                            Console.Write(rules + ")");
-                            break;
-                        }
-
-                        break;
-
-                  
-                }
-                //Console.Write(token + " ");
-            }
-            Console.Write(statement);
-            Console.Write(statement);
-            Console.Write(context.GetChild(2).GetText() + "\n");*/
-            return VisitChildren(context);
+            return VisitChildren(context); 
         }
         public override object VisitBlockStatement([NotNull] JavaParser.BlockStatementContext context)
         {
@@ -256,7 +221,14 @@ namespace JavaCSharp
         }
         public override object VisitStatement([NotNull] JavaParser.StatementContext context)
         {
-            //Console.Write(context.GetChild(0).GetText());
+            dynamic current = context;
+            if (context == context.IF())
+            {
+                Console.Write(context.GetText());
+                
+            }
+            
+            
             return VisitChildren(context);
         }
         public override object VisitExpression([NotNull] JavaParser.ExpressionContext context)
@@ -269,14 +241,34 @@ namespace JavaCSharp
            // Console.Write(context.GetText());
             return VisitChildren(context);
         }
+
         public override object VisitPrimary([NotNull] JavaParser.PrimaryContext context)
         {
-        
+            dynamic ctx = context;
+            
+            if (ctx.GetText() == "System")
+            {
+                Console.Write("Console.");
+               
+            }
+            
+            
             return VisitChildren(context);
         }
         public override object VisitMethodCall([NotNull] JavaParser.MethodCallContext context)
         {
-            //Console.Write(context.GetChild(3).GetText());
+            string current = context.GetText();
+            
+            if (current.Substring(0, 7) == "println")
+            {
+                string remain = current.Substring(7, current.Length-7);
+                Console.Write("WriteLine" + remain +";\n");
+            }
+            else if (context.Equals(context.THIS()))
+            {
+                Console.Write(context + " ");
+            }
+            //Console.Write(context.GetText());
             return VisitChildren(context);
         }
         public override object VisitPrimitiveType([NotNull] JavaParser.PrimitiveTypeContext context)
@@ -284,5 +276,6 @@ namespace JavaCSharp
 
             return VisitChildren(context);
         }
+       
     }
 }
