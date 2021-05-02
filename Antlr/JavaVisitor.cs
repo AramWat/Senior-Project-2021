@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,13 +17,16 @@ namespace JavaCSharp
         String newBody;
         public override object VisitCompilationUnit([NotNull] Java8Parser.CompilationUnitContext context)
         {
-            
+            Console.WriteLine("using System;");
             return VisitChildren(context);
         }
 
         public override object VisitTypeDeclaration([NotNull] Java8Parser.TypeDeclarationContext context)
         {
- 
+            startIndex = context.GetText().IndexOf("{");
+            replace = context.GetText().Substring(0, startIndex);
+            replace = replace.Replace("public","public ").Replace("class", "class ");
+            Console.WriteLine(replace + "\n" + "{");
             return base.VisitTypeDeclaration(context);
         }
 
@@ -35,8 +38,7 @@ namespace JavaCSharp
 
         public override object VisitClassDeclaration([NotNull] Java8Parser.ClassDeclarationContext context)
         {
-            String body = context.GetText();
-            Console.WriteLine("Class Declaration Here" + "\n" + body);
+
             return base.VisitClassDeclaration(context);
         }
 
@@ -46,7 +48,7 @@ namespace JavaCSharp
             if (body.Contains("publicstaticvoidmain(String[]args){"))
             {
                 startIndex = body.IndexOf("args){") + 6;
-                replace = "public static void main(String[]args)";
+                replace = "public static void Main(String[]args)";
             }
             Console.WriteLine("\n" + replace + "\n" + "{");
             newBody = body.Substring(startIndex);
@@ -55,7 +57,8 @@ namespace JavaCSharp
 
         public override object VisitMethodBody([NotNull] Java8Parser.MethodBodyContext context)
         {
-            newBody = newBody.Replace("int", " int ").Replace(";",";\n");
+            newBody = newBody.Replace("System.out.println", "Console.WriteLine").Replace("int", " int ").Replace(";",";\n").Replace("{", " {\n").Replace("}", " }\n")
+                .Replace("{", " {\n").Replace("length","Length");
             //for(int i = 0; i < newBody.Length;i++)
             //{
             //    if (newBody.Contains("int"))
