@@ -57,8 +57,18 @@ namespace JavaCSharp
 
         public override object VisitMethodBody([NotNull] Java8Parser.MethodBodyContext context)
         {
+            if (newBody.Contains('"'))
+            {
+                startIndex = newBody
+            }
+            if (newBody.Contains("String"))
+            {
+                newBody = newBody.Replace("String","string ");
+            }
             newBody = newBody.Replace("System.out.println", "Console.WriteLine").Replace("int", " int ").Replace(";",";\n").Replace("{", " {\n").Replace("}", " }\n")
                 .Replace("{", " {\n").Replace("length","Length");
+
+             
             //for(int i = 0; i < newBody.Length;i++)
             //{
             //    if (newBody.Contains("int"))
