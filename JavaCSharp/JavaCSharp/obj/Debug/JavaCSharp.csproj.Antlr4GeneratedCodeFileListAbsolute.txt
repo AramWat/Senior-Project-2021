@@ -1,0 +1,6 @@
+C:\Users\Jordan Halim\source\repos\JavaCSharp\JavaCSharp\obj\Debug\Java8Lexer.cs
+C:\Users\Jordan Halim\source\repos\JavaCSharp\JavaCSharp\obj\Debug\Java8Parser.cs
+C:\Users\Jordan Halim\source\repos\JavaCSharp\JavaCSharp\obj\Debug\Java8ParserListener.cs
+C:\Users\Jordan Halim\source\repos\JavaCSharp\JavaCSharp\obj\Debug\Java8ParserBaseListener.cs
+C:\Users\Jordan Halim\source\repos\JavaCSharp\JavaCSharp\obj\Debug\Java8ParserVisitor.cs
+C:\Users\Jordan Halim\source\repos\JavaCSharp\JavaCSharp\obj\Debug\Java8ParserBaseVisitor.cs
