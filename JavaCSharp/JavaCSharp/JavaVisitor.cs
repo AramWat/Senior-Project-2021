@@ -18,9 +18,11 @@ namespace JavaCSharp
         String temp2;
         int startIndex;
         int refIndex;
+        bool initialReplace;
         String path = "MyText.cs";
         public override object VisitCompilationUnit([NotNull] Java8Parser.CompilationUnitContext context)
          {
+            initialReplace = false;
             using (StreamWriter sw = File.CreateText(path))
             {
                 sw.WriteLine("using System;" + "\n" + "using System.IO;");
@@ -63,6 +65,7 @@ namespace JavaCSharp
                 startIndex = body.IndexOf("args){") + 6;
                 replace = "public static void Main(String[]args)";
             }
+
             using (StreamWriter sw = File.AppendText(path))
             {
                 sw.WriteLine("\n" + replace + "\n" + "{");
@@ -71,7 +74,10 @@ namespace JavaCSharp
             newBody = body.Substring(startIndex);
             return base.VisitClassBody(context);
         }
-
+        public override object VisitConstructorModifier([NotNull] Java8Parser.ConstructorModifierContext context)
+        {
+            return base.VisitConstructorModifier(context);
+        }
         public override object VisitMethodBody([NotNull] Java8Parser.MethodBodyContext context)
         {
             //if (newBody.Contains('"'))
@@ -106,18 +112,21 @@ namespace JavaCSharp
             {
                 newBody = newBody.Replace("String","string ");
             }
-            newBody = newBody.Replace("System.out.println", "Console.WriteLine").Replace("int", " int ").Replace(";", ";\n").Replace("{", " {\n").Replace("}", " }\n")
+            if(initialReplace == false)
+            {
+                newBody = newBody.Replace("System.out.println", "Console.WriteLine").Replace("return", " return ").Replace("int", " int ").Replace(";", ";\n").Replace("{", " {\n").Replace("}", " }\n")
                 .Replace("{", " {\n").Replace("length", "Length").Replace("double", " double ").Replace("boolean", " bool ").Replace("String", "string ").Replace("float", " float ")
                 .Replace("long", " long ").Replace("new", " new ").Replace("private", " private ").Replace("static", " static ").Replace("class", "class ").Replace("indexOf", "IndexOf")
                 .Replace("substring", "Substring").Replace("toString", "ToString").Replace("equals", "Equals").Replace("concat", "Concat").Replace("contains", "Contains");
+                initialReplace = true;
+                using (StreamWriter sw = File.AppendText(path))
+                {
+                    sw.WriteLine(newBody);
 
-
-
-            using (StreamWriter sw = File.AppendText(path))
-            {
-                sw.WriteLine(newBody);
-                
+                }
             }
+
+            
             //Console.WriteLine(newBody);
             return base.VisitMethodBody(context);
         }
